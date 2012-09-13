@@ -48,3 +48,4 @@
 /gdal/libgdal.la
 /gdal/libtool
 /gdal/port/cpl_config.h
+/gdal/config.log

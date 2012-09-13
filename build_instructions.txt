@@ -1,0 +1,23 @@
+Build on Mac os X:
+Follow these instructions:
+http://trac.osgeo.org/gdal/wiki/BuildingOnMac
+
+=> For dependencies: 
+brew install gdal
+to install all the dependencies and then 
+brew remove gdal
+
+Summary:
+1-
+Change 
+LIBTOOL_LINK    =       $(LIBTOOL) --mode=link    --tag=LD
+to
+LIBTOOL_LINK    =       $(LIBTOOL) --mode=link
+in GDALMake.opt.in
+2-
+./configure CFLAGS="-Os -arch i386 -arch x86_64" CXXFLAGS="-Os -arch i386 -arch x86_64" LDFLAGS="-arch i386 -arch x86_64"
+3-
+make
+4-
+sudo make install
+
