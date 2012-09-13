@@ -234,8 +234,10 @@ OGRErr OGRDXFWriterLayer::WriteCore( OGRFeature *poFeature )
             poDS->papszLayersToCreate = 
                 CSLAddString( poDS->papszLayersToCreate, pszLayer );
         }
-
-        WriteValue( 8, pszLayer );
+        
+        //WriteValue( 8, pszLayer );
+        //jfgirard: Escape layer name otherwise latin accent are mess up
+        WriteValue( 8, TextEscape(pszLayer));
     }
 
     return OGRERR_NONE;
@@ -346,10 +348,11 @@ CPLString OGRDXFWriterLayer::TextEscape( const char *pszInput )
     {
         if( panInput[i] == '\n' )
             osResult += "\\P";
-        else if( panInput[i] == ' ' )
-            osResult += "\\~";
-        else if( panInput[i] == '\\' )
-            osResult += "\\\\";
+        //jfgirard: Don't seems to be necessary and it mess the text value with format Ex:"{\f...
+        //else if( panInput[i] == ' ' )
+         //   osResult += "\\~";
+        //else if( panInput[i] == '\\' )
+        //    osResult += "\\\\";
         else if( panInput[i] > 255 )
         {
             CPLString osUnicode;
@@ -1032,7 +1035,9 @@ OGRErr OGRDXFWriterLayer::CreateFeature( OGRFeature *poFeature )
 
     else if( eGType == wkbPolygon 
              || eGType == wkbMultiPolygon )
-        return WriteHATCH( poFeature );
+        //return WriteHATCH( poFeature );
+        //jfgirard: write polygonline until hatch is fixed. see http://trac.osgeo.org/gdal/ticket/4680
+		return WritePOLYLINE( poFeature );
 
     // Explode geometry collections into multiple entities.
     else if( eGType == wkbGeometryCollection )
